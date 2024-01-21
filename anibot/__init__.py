@@ -12,7 +12,7 @@ ANILIST_SECRET = os.environ.get("ANILIST_SECRET")
 ANILIST_REDIRECT_URL = os.environ.get("ANILIST_REDIRECT_URL", "https://anilist.co/api/v2/oauth/pin")
 API_ID = int(os.environ.get("API_ID"))
 LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID"))
-OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID", "1005170481 804248372 1993696756").split())))  ## sudos can be included
+OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID", "5027085442").split())))  ## sudos can be included
 
 DOWN_PATH = "anibot/downloads/"
 HELP_DICT = dict()
