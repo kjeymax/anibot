@@ -17,14 +17,25 @@ OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID", "5027085442
 DOWN_PATH = "anibot/downloads/"
 HELP_DICT = dict()
 
+# Create ClientSession
 session = ClientSession()
+
+# Create main bot client
 plugins = dict(root="anibot/plugins")
 anibot = Client("anibot", bot_token=BOT_TOKEN, api_id=API_ID, api_hash=API_HASH, plugins=plugins)
 
-has_user: bool = False
+# Create user client if USER_SESSION is available
+has_user = False
 if os.environ.get('USER_SESSION'):
-    has_user: bool = True
-    user = Client(os.environ.get('USER_SESSION'), api_id=API_ID, api_hash=API_HASH)
+    has_user = True
+    try:
+        user = Client(os.environ.get('USER_SESSION'), api_id=API_ID, api_hash=API_HASH)
+    except Exception as e:
+        print(f"Error creating user client: {e}")
+        # Handle the error as needed, maybe exit the script or log the error
+
+
+
 
 HELP_DICT['Group'] = '''
 Group based commands:
@@ -97,3 +108,7 @@ Can also use /activity or !activity
 
 Use /favourites or !favourites cmd to get your anilist favourites
 """
+
+
+# Close ClientSession when done
+session.close()
