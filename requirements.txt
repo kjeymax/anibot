@@ -1,5 +1,5 @@
-pyrogram==2.0.97
-pymongo==2.8
+pyrogram=2.0.97
+pymongo=2.8
 tgcrypto
 requests
 aiofiles>=0.6.0
