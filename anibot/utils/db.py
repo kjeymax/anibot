@@ -1,32 +1,36 @@
-# below code is taken from USERGE-X repo
-# all credits to the respective author (dunno who wrote it will find later
-# n update)
-
-
-__all__ = ['get_collection']
-
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor.core import AgnosticClient, AgnosticDatabase, AgnosticCollection
 from .. import DB_URL
 
-print("Connecting to Database ...")
+__all__ = ['get_collection']
 
-_MGCLIENT: AgnosticClient = AsyncIOMotorClient(DB_URL)
-_RUN = asyncio.get_event_loop().run_until_complete
+# Async function to initialize the database
+async def initialize_db():
+    try:
+        async with AsyncIOMotorClient(DB_URL) as client:
+            if "anibot" in await client.list_database_names():
+                print("anibot Database Found :) => Now Logging to it...")
+            else:
+                print("anibot Database Not Found :( => Creating New Database...")
 
-if "anibot" in _RUN(_MGCLIENT.list_database_names()):
-    print("anibot Database Found :) => Now Logging to it...")
-else:
-    print("anibot Database Not Found :( => Creating New Database...")
+            database = client["anibot"]
+            # Your additional initialization code goes here
 
-_DATABASE: AgnosticDatabase = _MGCLIENT["anibot"]
+    except Exception as e:
+        print(f"Error connecting to MongoDB: {e}")
+        # Handle the error as needed, maybe exit the script or log the error
 
+# Run the async initialization function using asyncio.run
+asyncio.run(initialize_db())
 
+# Access the initialized database
+_DATABASE: AgnosticDatabase = AsyncIOMotorClient(DB_URL)["anibot"]
+
+# Function to get or create a collection
 def get_collection(name: str) -> AgnosticCollection:
-    """ Create or Get Collection from your database """
     return _DATABASE[name]
 
-
-def _close_db() -> None:
-    _MGCLIENT.close()
+# Function to close the database connection
+def close_db() -> None:
+    AsyncIOMotorClient(DB_URL).close()
