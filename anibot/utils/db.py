@@ -1,30 +1,32 @@
+# below code is taken from USERGE-X repo
+# all credits to the respective author (dunno who wrote it will find later
+# n update)
+
+
+__all__ = ['get_collection']
+
 import asyncio
-from pyrogram import idle
-from . import anibot, has_user, session
-from .utils.db import _close_db
+from motor.motor_asyncio import AsyncIOMotorClient
+from motor.core import AgnosticClient, AgnosticDatabase, AgnosticCollection
+from .. import DB_URL
 
-user = None
-if has_user:
-    from . import user
+print("Connecting to Database ...")
 
-async def main():
-    try:
-        await anibot.start()
-        if user is not None:
-            await user.start()
+_MGCLIENT: AgnosticClient = AsyncIOMotorClient(DB_URL)
+_RUN = asyncio.get_event_loop().run_until_complete
 
-        await idle()
+if "anibot" in _RUN(_MGCLIENT.list_database_names()):
+    print("anibot Database Found :) => Now Logging to it...")
+else:
+    print("anibot Database Not Found :( => Creating New Database...")
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
+_DATABASE: AgnosticDatabase = _MGCLIENT["anibot"]
 
-    finally:
-        await anibot.stop()
-        if user is not None:
-            await user.stop()
 
-        _close_db()
-        await session.close()
+def get_collection(name: str) -> AgnosticCollection:
+    """ Create or Get Collection from your database """
+    return _DATABASE[name]
 
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+
+def _close_db() -> None:
+    _MGCLIENT.close()
