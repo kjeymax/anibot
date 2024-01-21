@@ -12,30 +12,19 @@ ANILIST_SECRET = os.environ.get("ANILIST_SECRET")
 ANILIST_REDIRECT_URL = os.environ.get("ANILIST_REDIRECT_URL", "https://anilist.co/api/v2/oauth/pin")
 API_ID = int(os.environ.get("API_ID"))
 LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID"))
-OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID", "5027085442").split())))  ## sudos can be included
+OWNER = list(filter(lambda x: x, map(int, os.environ.get("OWNER_ID", "1005170481 804248372 1993696756").split())))  ## sudos can be included
 
 DOWN_PATH = "anibot/downloads/"
 HELP_DICT = dict()
 
-# Create ClientSession
 session = ClientSession()
-
-# Create main bot client
 plugins = dict(root="anibot/plugins")
 anibot = Client("anibot", bot_token=BOT_TOKEN, api_id=API_ID, api_hash=API_HASH, plugins=plugins)
 
-# Create user client if USER_SESSION is available
-has_user = False
+has_user: bool = False
 if os.environ.get('USER_SESSION'):
-    has_user = True
-    try:
-        user = Client(os.environ.get('USER_SESSION'), api_id=API_ID, api_hash=API_HASH)
-    except Exception as e:
-        print(f"Error creating user client: {e}")
-        # Handle the error as needed, maybe exit the script or log the error
-
-
-
+    has_user: bool = True
+    user = Client(os.environ.get('USER_SESSION'), api_id=API_ID, api_hash=API_HASH)
 
 HELP_DICT['Group'] = '''
 Group based commands:
@@ -108,7 +97,3 @@ Can also use /activity or !activity
 
 Use /favourites or !favourites cmd to get your anilist favourites
 """
-
-
-# Close ClientSession when done
-session.close()
