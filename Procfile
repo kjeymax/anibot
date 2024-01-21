@@ -1,1 +1,1 @@
-worker: python3 -m anibot
+web: python3 -m anibot
